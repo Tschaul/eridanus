@@ -1,42 +1,42 @@
 use std::ops;
 
-pub struct Number {
+pub struct Amount {
     value: u8,
 }
 
-impl Number {
+impl Amount {
     pub fn new(value: u8) -> Self {
-        Number { value: value }
+        Amount { value: value }
     }
 }
 
-impl ops::Add<Number> for Number {
-    type Output = Number;
-    fn add(self, other: Number) -> Number {
+impl ops::Add<Amount> for Amount {
+    type Output = Amount;
+    fn add(self, other: Amount) -> Amount {
         if self.value > u8::max_value() - other.value {
-            Number { value: 255 }
+            Amount { value: 255 }
         } else {
-            Number {
+            Amount {
                 value: self.value + other.value,
             }
         }
     }
 }
 
-impl ops::Sub<Number> for Number {
-    type Output = Number;
-    fn sub(self, other: Number) -> Number {
+impl ops::Sub<Amount> for Amount {
+    type Output = Amount;
+    fn sub(self, other: Amount) -> Amount {
         if self.value < other.value {
-            Number { value: 0 }
+            Amount { value: 0 }
         } else {
-            Number {
+            Amount {
                 value: self.value - other.value,
             }
         }
     }
 }
 
-impl ToString for Number {
+impl ToString for Amount {
     fn to_string(&self) -> String {
         self.value.to_string()
     }
