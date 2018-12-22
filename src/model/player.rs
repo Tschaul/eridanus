@@ -1,9 +1,15 @@
-pub struct PlayerToken {
-    name: String
-}
+#[derive(Eq, PartialEq, Hash, Debug, Clone, Copy)]
+pub struct PlayerToken(String);
 
 impl PlayerToken {
     pub fn new(name: String) -> Self {
-        PlayerToken { name: name }
+        PlayerToken(name)
+    }
+}
+
+impl std::fmt::Display for PlayerToken {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let PlayerToken(name) = self;
+        write!(f, "{}", name)
     }
 }
