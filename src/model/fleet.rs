@@ -17,8 +17,22 @@ impl std::fmt::Display for FleetKey {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct Fleet {
     pub owner: Option<PlayerToken>,
     pub world: WorldKey,
     pub ships: Amount,
+}
+
+impl std::fmt::Display for Fleet {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, 
+            "[{}]={}", 
+            match &self.owner {
+                Some(player) => player.to_string(),
+                None => String::from("")
+            }, 
+            self.ships
+        )
+    }
 }

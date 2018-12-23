@@ -28,7 +28,23 @@ fn main() {
         mines: Amount::new(1),
     };
 
-    let mut universe = Universe::new();
+    println!("{}", world);
 
-    universe.worlds.insert(WorldKey::new(1), world);
+    let universe = Universe::new().with_updated_world(&WorldKey::new(1), world);
+
+    println!("asd");
+    println!("{}", universe);
+
+    let print_out = String::from("
+W75 (5,12,86) [TERRAN] (Industry=30, Metal=30, Mines=2, Population=50, Limit=100, Turns=1, I-Ships=1, P-Ships=1)
+F3[TERRAN]=0
+F70[TERRAN]=0
+F102[TERRAN]=0
+F119[TERRAN]=0
+F133[TERRAN]=0
+
+W5 (75,12) [TERRAN] (Industry=30, Metal=30, Mines=2, Population=50, Limit=100, Turns=1, I-Ships=1, P-Ships=1)
+");
+
+    Universe::parse_print_out(&print_out);
 }

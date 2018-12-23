@@ -5,7 +5,7 @@ pub enum OrderType {
 }
 
 pub trait Order {
-    fn order_type(&self) -> OrderType;
+    fn get_order_type(&self) -> OrderType;
 
-    fn execute(&self, universe: Universe) -> Result<(), String>;
+    fn execute(&self, universe: Universe) -> Result<Universe, String>;
 }

@@ -1,4 +1,4 @@
-#[derive(Eq, PartialEq, Hash, Debug, Clone, Copy)]
+#[derive(Eq, PartialEq, Hash, Debug, Clone)]
 pub struct PlayerToken(String);
 
 impl PlayerToken {

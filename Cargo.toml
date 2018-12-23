@@ -5,3 +5,4 @@ authors = ["Julian Steinwachs <julian.steinwachs@fau.de>"]
 edition = "2018"
 
 [dependencies]
+im-rc = "12.2.0"

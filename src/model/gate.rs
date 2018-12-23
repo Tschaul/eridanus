@@ -11,8 +11,14 @@ impl Gate {
             Gate(world2, world1)
         }
     }
+
     pub fn has_world(&self, world: &WorldKey) -> bool {
         let Gate(world1, world2) = self;
         world1 == world || world2 == world
+    }
+
+    pub fn other_key(&self, world: &WorldKey) -> &WorldKey {
+        let Gate(world1, world2) = self;
+        if world1 == world { world1 } else { world2 }
     }
 }
