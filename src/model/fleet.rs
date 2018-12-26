@@ -13,7 +13,8 @@ impl FleetKey {
 
 impl std::fmt::Display for FleetKey {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}", self)
+        let FleetKey(value) = self;
+        write!(f, "{}", value)
     }
 }
 
@@ -22,6 +23,32 @@ pub struct Fleet {
     pub owner: Option<PlayerToken>,
     pub world: WorldKey,
     pub ships: Amount,
+}
+
+impl Fleet {
+    pub fn parse_print_out(fleet_print_out: &str, world_key: WorldKey) -> Result<Self, String> {
+        let mut fleet = Fleet {
+            owner: None,
+            world: world_key,
+            ships: Amount::new(0)
+        };
+        
+        let split_equal: Vec<&str> = fleet_print_out.split('=').collect(); 
+        let owner_key_value = String::from(split_equal[0].trim_matches(|c| c == '[' || c == ']' ));
+
+        if !owner_key_value.is_empty() {
+            fleet.owner = Some(PlayerToken::new(owner_key_value));
+        }
+        println!("{:?}", split_equal);
+        let ships: u8 = match split_equal[1].parse() {
+            Ok(value) => value,
+            Err(_) => return Err(format!("Error parsing fleet ships: {}", fleet_print_out))
+        };
+
+        fleet.ships = Amount::new(ships);
+
+        Ok(fleet)
+    }
 }
 
 impl std::fmt::Display for Fleet {

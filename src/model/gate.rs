@@ -19,6 +19,6 @@ impl Gate {
 
     pub fn other_key(&self, world: &WorldKey) -> &WorldKey {
         let Gate(world1, world2) = self;
-        if world1 == world { world1 } else { world2 }
+        if world1 == world { world2 } else { world1 }
     }
 }

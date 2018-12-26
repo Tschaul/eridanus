@@ -7,7 +7,6 @@ use crate::model::fleet::Fleet;
 use crate::model::fleet::FleetKey;
 use crate::model::world::World;
 use crate::model::world::WorldKey;
-use crate::model::player::PlayerToken;
 use crate::model::gate::Gate;
 
 pub struct Universe {
@@ -17,13 +16,6 @@ pub struct Universe {
 }
 
 impl Universe {
-    pub fn new() -> Self {
-        Universe {
-            fleets: HashMap::new(),
-            worlds: HashMap::new(),
-            gates: HashSet::new()
-        }
-    }
 
     pub fn with_updated_fleet(&self, fleet_key: &FleetKey, fleet: Fleet) -> Self {
         Universe {
@@ -56,7 +48,10 @@ impl Universe {
     }
 
     pub fn parse_print_out(print_out: &String) -> Result<Self,String> {
+
         let mut gates: HashSet<Gate> = HashSet::new();
+        let mut worlds: HashMap<WorldKey, World> = HashMap::new();
+        let mut fleets: HashMap<FleetKey, Fleet> = HashMap::new();
 
         let world_print_outs: Vec<&str> = print_out.trim().split("\n\n").collect();
         for world_print_out in world_print_outs {
@@ -66,8 +61,7 @@ impl Universe {
 
             let lines: Vec<&str> = world_print_out.split("\n").collect();
 
-            let world_parts: Vec<&str> = lines[0].splitn(4, ' ').collect();
-            println!("{:?}", world_parts);
+            let world_parts: Vec<&str> = lines[0].splitn(3, ' ').collect();
             
             let world_key_value: u8 = match (&world_parts[0][1..]).parse() {
                 Ok(value) => value,
@@ -84,16 +78,35 @@ impl Universe {
                 gates.insert(Gate::new(world_key, WorldKey::new(gate_value)));
             }
 
-            let owner_key_value: String = String::from(world_parts[2].trim_matches(|c| c == '[' || c == ']' ));
-            let owner_key = PlayerToken::new(owner_key_value);
+            println!("{:?}", gates);
 
-            // TODO world internals
+            let world = World::parse_print_out(world_parts[2])?;
 
-            // TODO fleets
+            worlds.insert(world_key, world);
 
-            println!("{:?} {:?} {:?}", world_key_value, gates, owner_key);
+            for line in &lines[1..]  {
+                let pos = match line.find('[') {
+                    Some(number) => number,
+                    None => return Err(format!("Bad format for fleet 1: {}", line))
+                };
+                println!("{} , {} , {}", line, pos, &line[1..pos]);
+                let flee_key_value: u8 = match line[1..(pos)].parse() {
+                    Ok(value) => value,
+                    Err(_) => return Err(format!("Bad format for fleet 2: {}", &line[1..pos]))
+                };
+                let fleet_key = FleetKey::new(flee_key_value);
+                let fleet = Fleet::parse_print_out(&line[pos..], world_key)?;
+
+                fleets.insert(fleet_key, fleet);
+            }
+
         }
-        Ok(Universe::new())
+
+        Ok(Universe {
+            worlds: worlds,
+            fleets: fleets,
+            gates: gates,
+        })
     }
 }
 
@@ -101,10 +114,12 @@ impl std::fmt::Display for Universe {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         for (world_key, world) in &self.worlds {
             write!(f,"W{} (", world_key)?;
-            for gate in self.gates.iter()
-                    .filter(|gate| gate.has_world(&world_key)) {
-                write!(f, "{}", gate.other_key(&world_key))?;
-            }
+            let gates: Vec<String> = self.gates.iter()
+                .filter(|gate| gate.has_world(&world_key))
+                .map(|gate| gate.other_key(&world_key))
+                .map(|world_key| format!("{}", world_key))
+                .collect();
+            write!(f, "{}", gates.join(","))?;
             write!(f, ") {}\n", world)?;
             for (fleet_key,fleet) in self.fleets.iter()
                     .filter(|(_,fleet)| fleet.world == world_key.clone()) {
@@ -112,7 +127,6 @@ impl std::fmt::Display for Universe {
             }
             write!(f, "\n")?;
         }
-        write!(f, "universe")?;
         Ok(())
     }
 }

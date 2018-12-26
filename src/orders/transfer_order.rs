@@ -58,9 +58,6 @@ impl TransferOrder {
             },
             Source::FromIShip(world_key) => {
                 let mut world = universe.get_world(world_key)?;
-                if world.owner != Some(self.player.clone()) {
-                    return Err(String::from("Source world not owned by player"))
-                }
                 if self.amount > world.i_ships {
                     Err(String::from("Not enough ships"))
                 } else {
@@ -73,9 +70,6 @@ impl TransferOrder {
             },
             Source::FromPShip(world_key) => {
                 let mut world = universe.get_world(world_key)?;
-                if world.owner != Some(self.player.clone()) {
-                    return Err(String::from("Source world not owned by player"))
-                }
                 if self.amount > world.p_ships {
                     Err(String::from("Not enough ships"))
                 } else {
