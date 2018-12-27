@@ -35,6 +35,15 @@ impl Order for TransferOrder {
         // let u2 = self.push_to_target(&u1, world_key)?;
         Ok(u1)
     }
+
+    fn try_parse(order: &String) -> Option<Self> {
+        Some(TransferOrder {
+            amount: Amount::new(0),
+            source: Source::FromFleet(FleetKey::new(1)),
+            target: Target::ToIShip,
+            player: PlayerToken::new(String::from("TERRAN"))
+        })
+    }
 }
 
 impl TransferOrder {

@@ -112,17 +112,38 @@ impl Universe {
 
 impl std::fmt::Display for Universe {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        for (world_key, world) in &self.worlds {
+
+        let mut key_value_paris: Vec<&(WorldKey, World)> 
+            = (&self.worlds).iter().collect();
+
+        key_value_paris.sort_by(|(a,_),(b,_)| a.cmp(b));
+
+        for (world_key, world) in key_value_paris {
             write!(f,"W{} (", world_key)?;
-            let gates: Vec<String> = self.gates.iter()
+
+            let mut gate_values: Vec<&WorldKey> = self.gates.iter()
                 .filter(|gate| gate.has_world(&world_key))
                 .map(|gate| gate.other_key(&world_key))
-                .map(|world_key| format!("{}", world_key))
                 .collect();
-            write!(f, "{}", gates.join(","))?;
+
+            gate_values.sort();
+
+            let gate_strings: Vec<String> 
+                = gate_values.iter()
+                    .map(|k| format!("{}",k)).collect();
+
+            write!(f, "{}", gate_strings.join(","))?;
+
             write!(f, ") {}\n", world)?;
-            for (fleet_key,fleet) in self.fleets.iter()
-                    .filter(|(_,fleet)| fleet.world == world_key.clone()) {
+
+            let mut world_fleets: Vec<&(FleetKey, Fleet)> 
+                = self.fleets.iter()
+                    .filter(|(_,fleet)| fleet.world == world_key.clone())
+                    .collect();
+
+            world_fleets.sort_by(|(a,_),(b,_)| a.cmp(b));
+
+            for (fleet_key,fleet) in world_fleets {
                 write!(f, "F{}{}\n", fleet_key, fleet)?;
             }
             write!(f, "\n")?;
