@@ -1,53 +1,57 @@
-use crate::orders::order::OrderType;
-use crate::orders::order::Order;
+use crate::order::order::OrderType;
+use crate::order::order::Order;
 use crate::model::fleet::FleetKey;
 use crate::model::world::WorldKey;
 use crate::model::player::PlayerToken;
 use crate::model::base_types::Amount;
 use crate::model::universe::Universe;
 
+#[derive(Clone)]
 enum Source {
     FromFleet(FleetKey),
     FromIShip(WorldKey),
     FromPShip(WorldKey)
 }
 
+#[derive(Clone)]
 enum Target {
     ToFleet(FleetKey),
     ToIShip,
     ToPShip
 }
 
-pub struct TransferOrder {
+#[derive(Clone)]
+pub struct TransferShipOrder {
     player: PlayerToken,
     source: Source,
     target: Target,
     amount: Amount,
 }
 
-impl Order for TransferOrder {
+impl Order for TransferShipOrder {
     fn get_order_type(&self) -> OrderType {
         OrderType::TransferOrder
     }
 
-    fn execute(&self, universe: Universe) -> Result<Universe,String> {
+    fn execute(&self, universe: &Universe) -> Result<Universe,String> {
         let (world_key, u1) = self.draw_from_source(universe)?;
         // let u2 = self.push_to_target(&u1, world_key)?;
         Ok(u1)
     }
+}
 
-    fn try_parse(order: &String) -> Option<Self> {
-        Some(TransferOrder {
+impl TransferShipOrder {
+
+    pub fn try_parse(order: &str, player: PlayerToken) -> Option<Self> {
+        Some(TransferShipOrder {
             amount: Amount::new(0),
             source: Source::FromFleet(FleetKey::new(1)),
             target: Target::ToIShip,
-            player: PlayerToken::new(String::from("TERRAN"))
+            player: player
         })
     }
-}
 
-impl TransferOrder {
-    fn draw_from_source(&self, universe: Universe) -> Result<(WorldKey,Universe),String> {
+    fn draw_from_source(&self, universe: &Universe) -> Result<(WorldKey,Universe),String> {
         match &self.source {
             Source::FromFleet(fleet_key) => {
                 let mut fleet = universe.get_fleet(fleet_key)?;

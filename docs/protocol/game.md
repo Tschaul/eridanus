@@ -1,6 +1,6 @@
 ```
-#GAMERULES
-(Asd=3, Game-Nonce=8237497123)
+#GAME
+(Turn=0, Game-Nonce=8237497123)
 
 #PLAYERS
 
@@ -15,7 +15,6 @@ ABA1C54342F87...
 -----END PUBLIC KEY-----
 
 #UNIVERSE
-(Turn=0)
 
 W75 (5,12,86) [TERRAN] (Industry=30, Metal=30, Mines=2, Population=50, Limit=100, Turns=1, I-Ships=1, P-Ships=1)
 F3[TERRAN]=0

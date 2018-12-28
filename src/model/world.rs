@@ -17,7 +17,7 @@ impl std::fmt::Display for WorldKey {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct World {
     pub owner: Option<PlayerToken>,
     pub industry: Amount,

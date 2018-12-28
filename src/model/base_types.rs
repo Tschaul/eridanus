@@ -1,6 +1,6 @@
 use std::ops;
 
-#[derive(PartialEq, PartialOrd, Debug, Clone, Copy)]
+#[derive(PartialEq, Eq, PartialOrd, Debug, Clone, Copy)]
 pub struct Amount(u8);
 
 impl Amount {

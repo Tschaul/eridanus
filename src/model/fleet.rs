@@ -18,7 +18,7 @@ impl std::fmt::Display for FleetKey {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Fleet {
     pub owner: Option<PlayerToken>,
     pub world: WorldKey,
@@ -39,7 +39,6 @@ impl Fleet {
         if !owner_key_value.is_empty() {
             fleet.owner = Some(PlayerToken::new(owner_key_value));
         }
-        println!("{:?}", split_equal);
         let ships: u8 = match split_equal[1].parse() {
             Ok(value) => value,
             Err(_) => return Err(format!("Error parsing fleet ships: {}", fleet_print_out))

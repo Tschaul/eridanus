@@ -9,6 +9,7 @@ use crate::model::world::World;
 use crate::model::world::WorldKey;
 use crate::model::gate::Gate;
 
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Universe {
     fleets: HashMap<FleetKey, Fleet>,
     worlds: HashMap<WorldKey, World>,
@@ -47,7 +48,7 @@ impl Universe {
         }
     }
 
-    pub fn parse_print_out(print_out: &String) -> Result<Self,String> {
+    pub fn parse_print_out(print_out: &str) -> Result<Self,String> {
 
         let mut gates: HashSet<Gate> = HashSet::new();
         let mut worlds: HashMap<WorldKey, World> = HashMap::new();
@@ -71,14 +72,15 @@ impl Universe {
 
             let gate_parts: Vec<&str> = world_parts[1].trim_matches(|c| c == '(' || c == ')' ).split(',').collect();
             for gate_part in gate_parts {
-                let gate_value: u8 = match (&gate_part).parse() {
-                    Ok(value) => value,
-                    Err(_) => return Err(format!("Could not parse gates: {}", &world_parts[1]))
-                };
-                gates.insert(Gate::new(world_key, WorldKey::new(gate_value)));
+                if !str::is_empty(&gate_part) {
+                    let gate_value: u8 = match (&gate_part).parse() {
+                        Ok(value) => value,
+                        Err(_) => return Err(format!("Could not parse gates: {:}", &world_parts[1]))
+                    };
+                    gates.insert(Gate::new(world_key, WorldKey::new(gate_value)));
+                }
             }
 
-            println!("{:?}", gates);
 
             let world = World::parse_print_out(world_parts[2])?;
 
@@ -89,7 +91,6 @@ impl Universe {
                     Some(number) => number,
                     None => return Err(format!("Bad format for fleet 1: {}", line))
                 };
-                println!("{} , {} , {}", line, pos, &line[1..pos]);
                 let flee_key_value: u8 = match line[1..(pos)].parse() {
                     Ok(value) => value,
                     Err(_) => return Err(format!("Bad format for fleet 2: {}", &line[1..pos]))

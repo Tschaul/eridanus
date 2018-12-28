@@ -5,3 +5,4 @@ pub mod gate;
 pub mod player;
 pub mod fleet;
 pub mod universe;
+pub mod game;
