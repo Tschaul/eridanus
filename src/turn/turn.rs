@@ -4,13 +4,13 @@ use crate::model::player::PlayerToken;
 use crate::model::universe::Universe;
 use crate::model::game::Game;
 use crate::order::order::Order;
-use crate::order::order::OrderType;
-use crate::order::transfer_ships_order::TransferShipOrder;
+use crate::order::transfer_ships_order::TransferShipsOrder;
+use crate::order::order_expression::OrderExpression;
 
 pub struct Turn {
     turn_number: u32,
     game_nonce: u64,
-    orders: Vec<Box<Order>>,
+    orders: Vec<OrderExpression>,
     players: HashSet<PlayerToken>
 }
 
@@ -83,22 +83,24 @@ impl Turn {
         let mut order_list: Vec<Box<Order>> = Vec::new();
 
         for order_line in &lines[1..] {
-            let parse_result = TransferShipOrder::try_parse(order_line, player_key.clone());
-            match parse_result {
-                Some(value) => self.orders.push(Box::new(value)),
-                None => { }
+            let order_expression = OrderExpression::new(&order_line, &player_key);
+            match order_expression {
+                Some(expr) => {
+                    self.orders.push(expr);
+                },
+                None => {}
             }
         }
 
         Ok(())
     }
 
-    fn all_orders_for_type(&self, order_type: OrderType) -> Vec<&Box<Order>> {
-        let mut orders: Vec<&Box<Order>> = Vec::new();
+    fn all_orders_for_type(&self, f: &Fn(&OrderExpression) -> Option<Box<Order>>) -> Vec<Box<Order>> {
+        let mut orders: Vec<Box<Order>> = Vec::new();
 
         for order in &self.orders {
-            match order.get_order_type() {
-                order_type => orders.push(&order),
+            match f(order) {
+                Some(order) => orders.push(order),
                 _ => { }
             }
         }
@@ -109,9 +111,10 @@ impl Turn {
     pub fn execute_orders(&self, game: &Game) -> Game {
         let mut universe: Universe = game.get_universe();
 
-        let transfer_orders = self.all_orders_for_type(OrderType::TransferOrder);
+        let transfer_orders = self.all_orders_for_type(&TransferShipsOrder::try_parse);
 
         for order in transfer_orders {
+            println!("{:?}", order);            
             let maybe_universe = order.execute(&universe);
             match maybe_universe {
                 Ok(new_universe) => {

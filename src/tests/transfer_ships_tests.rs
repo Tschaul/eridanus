@@ -19,16 +19,16 @@ F70[TERRAN]=0"))?;
         turn.parse_orders(&String::from("
 #TURN
 [TERRAN] (Turn=1, Game-Nonce=1)
-F3T10F70
+F3T5F70
 "))?;
 
         let game2 = turn.execute_orders(&game);
 
-        assert_eq!(game, Game::parse_print_out(&String::from("
+        assert_eq!(game2, Game::parse_print_out(&String::from("
 #UNIVERSE
 W75 () [TERRAN] ()
-F3[TERRAN]=0
-F70[TERRAN]=10"))?);
+F3[TERRAN]=5
+F70[TERRAN]=5"))?);
 
         Ok(())
     }
