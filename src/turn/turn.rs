@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use im_rc::HashSet;
 
 use crate::model::player::PlayerToken;
 use crate::model::universe::Universe;
@@ -26,7 +26,8 @@ impl Turn {
         }
     }
 
-    pub fn parse_orders(&mut self, print_out: &str) -> Result<(), String> {
+    pub fn parse_orders(&self, print_out: &str) -> Result<Self, String> {
+
         let lines: Vec<&str> = print_out.trim().split("\n").collect();
         if !lines[0].starts_with("#TURN") {
             return Err(String::from("turn sheet must start with #TURN"))
@@ -43,9 +44,15 @@ impl Turn {
 
         if self.players.contains(&player_key) {
            return Err(String::from("orders of player were allready given")) 
-        } else {
-            self.players.insert(player_key.clone());
-        }
+        } 
+        
+        let mut turn = Turn {
+            game_nonce: self.game_nonce,
+            turn_number: self.turn_number,
+            players: self.players.update(player_key.clone()),
+            orders: self.orders.clone(),
+        };
+        
 
         let turn_parts: Vec<&str> = player_split[1].trim_matches(|c| c == '(' || c == ')' ).split(',').collect();
         
@@ -81,19 +88,17 @@ impl Turn {
             return Err(String::from("game nonce does not match"))
         }
 
-        let mut order_list: Vec<Box<Order>> = Vec::new();
-
         for order_line in &lines[1..] {
             let order_expression = OrderExpression::new(&order_line, &player_key);
             match order_expression {
                 Some(expr) => {
-                    self.orders.push(expr);
+                    turn.orders.push(expr);
                 },
                 None => {}
             }
         }
 
-        Ok(())
+        Ok(turn)
     }
 
     fn all_orders_for_type(&self, f: &Fn(&OrderExpression) -> Option<Box<Order>>) -> Vec<Box<Order>> {

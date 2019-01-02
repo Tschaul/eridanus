@@ -28,7 +28,7 @@ pub type OrderTokens = (
     OrderToken
 );
 
-#[derive(Debug)]
+#[derive(Debug,Clone)]
 pub struct OrderExpression {
     pub tokens: OrderTokens,
     pub player: PlayerToken

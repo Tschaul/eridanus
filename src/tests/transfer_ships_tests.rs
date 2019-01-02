@@ -14,9 +14,7 @@ W75 () [TERRAN] ()
 F3[TERRAN]=10
 F70[TERRAN]=0"))?;
 
-        let mut turn = Turn::empty(1,1);
-
-        turn.parse_orders(&String::from("
+        let turn = Turn::empty(1,1).parse_orders(&String::from("
 #TURN
 [TERRAN] (Turn=1, Game-Nonce=1)
 F3T5F70
