@@ -5,6 +5,7 @@ use crate::model::universe::Universe;
 use crate::model::game::Game;
 use crate::order::order::Order;
 use crate::order::transfer_ships_order::TransferShipsOrder;
+use crate::order::move_ship_order::MoveShipOrder;
 use crate::order::order_expression::OrderExpression;
 
 pub struct Turn {
@@ -111,10 +112,10 @@ impl Turn {
     pub fn execute_orders(&self, game: &Game) -> Game {
         let mut universe: Universe = game.get_universe();
 
-        let transfer_orders = self.all_orders_for_type(&TransferShipsOrder::try_parse);
+        let mut orders = self.all_orders_for_type(&TransferShipsOrder::try_parse);
+        orders.append(&mut self.all_orders_for_type(&MoveShipOrder::try_parse));
 
-        for order in transfer_orders {
-            println!("{:?}", order);            
+        for order in orders {
             let maybe_universe = order.execute(&universe);
             match maybe_universe {
                 Ok(new_universe) => {

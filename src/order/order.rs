@@ -1,7 +1,8 @@
 use crate::model::universe::Universe;
 
 pub enum OrderType {
-    TransferOrder
+    TransferOrder,
+    MoveShipOrder
 }
 
 pub trait Order : std::fmt::Debug {

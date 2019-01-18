@@ -48,6 +48,10 @@ impl Universe {
         }
     }
 
+    pub fn has_gate(&self, world_key1: &WorldKey, world_key2: &WorldKey) -> bool {
+        self.gates.contains(&Gate::new(world_key1.clone(), world_key2.clone()))
+    }
+
     pub fn parse_print_out(print_out: &str) -> Result<Self,String> {
 
         let mut gates: HashSet<Gate> = HashSet::new();

@@ -53,7 +53,9 @@ impl TransferShipsOrder {
                 OrderToken::Char(OrderChar::T),
                 OrderToken::Num(a),
                 OrderToken::Char(OrderChar::F),
-                OrderToken::Num(f2)
+                OrderToken::Num(f2),
+                OrderToken::None,
+                OrderToken::None
             ) => Some(Box::new(TransferShipsOrder {
                 player: order.player.clone(),
                 source: Source::FromFleet(FleetKey::new(f1.clone())),
@@ -66,6 +68,8 @@ impl TransferShipsOrder {
                 OrderToken::Char(OrderChar::T),
                 OrderToken::Num(a),
                 OrderToken::Char(OrderChar::I),
+                OrderToken::None,
+                OrderToken::None,
                 OrderToken::None
             ) => Some(Box::new(TransferShipsOrder {
                 player: order.player.clone(),
@@ -79,6 +83,8 @@ impl TransferShipsOrder {
                 OrderToken::Char(OrderChar::T),
                 OrderToken::Num(a),
                 OrderToken::Char(OrderChar::P),
+                OrderToken::None,
+                OrderToken::None,
                 OrderToken::None
             ) => Some(Box::new(TransferShipsOrder {
                 player: order.player.clone(),

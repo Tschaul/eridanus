@@ -17,7 +17,16 @@ pub enum OrderToken {
     None,
 }
 
-pub type OrderTokens = (OrderToken,OrderToken,OrderToken,OrderToken,OrderToken,OrderToken);
+pub type OrderTokens = (
+    OrderToken,
+    OrderToken,
+    OrderToken,
+    OrderToken,
+    OrderToken,
+    OrderToken,
+    OrderToken,
+    OrderToken
+);
 
 #[derive(Debug)]
 pub struct OrderExpression {
@@ -82,6 +91,16 @@ impl OrderExpression {
             None => OrderToken::None,
         };
 
+        let token_7: OrderToken = match order_char_tokens.get(3) {
+            Some(c) => OrderToken::Char(c.clone()),
+            None => OrderToken::None,
+        };
+
+        let token_8: OrderToken = match order_num_tokens.get(3) {
+            Some(c) => OrderToken::Num(c.clone()),
+            None => OrderToken::None,
+        };
+
         Some(OrderExpression { 
             tokens: (
                 token_1,
@@ -89,7 +108,9 @@ impl OrderExpression {
                 token_3,
                 token_4,
                 token_5,
-                token_6
+                token_6,
+                token_7,
+                token_8
             ),
             player: player.clone()
         })
