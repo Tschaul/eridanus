@@ -1,5 +1,5 @@
 [package]
-name = "eridanus-core"
+name = "eridanus_core"
 version = "0.1.0"
 authors = ["Julian Steinwachs <julian.steinwachs@fau.de>"]
 edition = "2018"
